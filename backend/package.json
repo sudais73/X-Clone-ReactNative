@@ -13,9 +13,11 @@
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",
     "@arcjet/node": "^1.0.0-beta.15",
+    "@clerk/express": "^1.7.57",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
     "mongoose": "^9.0.1"
   }
 }
