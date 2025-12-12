@@ -1,13 +1,13 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
     from: {
-        tyoe: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,  // Fixed: was "tyoe"
         ref: "User",
         required: true
     },
     to: {
-        tyoe: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,  // Fixed: was "tyoe"
         ref: "User",
         required: true
     },
@@ -17,18 +17,17 @@ const notificationSchema = new mongoose.Schema({
         enum: ["follow", "like", "comment"]
     },
     post: {
-        tyoe: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,  // Fixed: was "tyoe"
         ref: "Post",
         default: null
     },
     comment: {
-        tyoe: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,  // Fixed: was "tyoe"
         ref: "Comment",
         default: null
     }
-}, { timestamps: true })
+}, { timestamps: true });
 
-
-const Notification = mongoose.model("Notification", notificationSchema)
+const Notification = mongoose.model("Notification", notificationSchema);
 
 export default Notification;
