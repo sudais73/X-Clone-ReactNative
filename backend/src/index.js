@@ -29,13 +29,21 @@ app.get('/',(req,res)=>(
 const startServer = async ()=>{
     try {
         await connectDB()
+
+    // listen for local development//
+    if(ENV.NODE_ENV !=="production"){
         app.listen(ENV.PORT, ()=>(
     console.log(`server is litening to port:${ENV.PORT}`)
     
 ))
+    }
+        
     } catch (error) {
         console.log("field to start server", error.message)
         process.exit(1)
     }
 }
 startServer();
+// export for the vercel
+
+export default app;
