@@ -1,51 +1,53 @@
-import { aj } from "../config/arcjet.js"
-
+import { aj } from "../config/arcjet.js";
 
 export const arcjetMiddleware = async (req, res, next) => {
     try {
         const decision = await aj.protect(req, {
-            requested: 1, // each request consume one token//
+            requested: 1, // Each request consumes one token
         });
-        //handle denied requests
 
-        if (decision.isDenied) {
-            if (decision.reason.isRateLimit) {
+        // Handle denied requests
+        if (decision.isDenied()) {
+            if (decision.reason.isRateLimit()) {
+                // Add rate limit headers (RFC 6585)
+                res.setHeader('Retry-After', 10); // Suggest retry after 10 seconds
                 return res.status(429).json({
-                    error: "Too many Request",
-                    msg: "Rate limit exceed. please try later"
-                })
-
-
-
-            } else if (
-                decision.reason.isBot()) {
+                    error: "Too Many Requests",
+                    message: "Rate limit exceeded. Please try again later.",
+                    retryAfter: 10
+                });
+            } else if (decision.reason.isBot()) {
                 return res.status(403).json({
-                    error: "TBot Access denied",
-                    msg: "Authomated request is not allowed"
-                })
+                    error: "Bot Access Denied",
+                    message: "Automated requests are not allowed."
+                });
             } else {
                 return res.status(403).json({
-                    error: "forbidden",
-                    msg: "access denied by securtity policy"
-                })
+                    error: "Forbidden",
+                    message: "Access denied by security policy."
+                });
             }
         }
 
-        // check for spoofed bots//
-
-        if (decision.results.some((result) => result.reason.isBot() && result.reason.isSpoofed)) {
+        // Check for spoofed bots
+        if (decision.results && decision.results.some(
+            (result) => result.reason && result.reason.isBot && result.reason.isBot() && result.reason.isSpoofed
+        )) {
             return res.status(403).json({
-                error: "Spoofed bot detected",
-                msg: "Malicious bot activity detected"
-            })
-
+                error: "Spoofed Bot Detected",
+                message: "Malicious bot activity detected."
+            });
         }
-        next();
 
+        // Attach decision to request for downstream use (optional)
+        req.arcjetDecision = decision;
+
+        next();
 
     } catch (error) {
-        console.log("Arcjet middlware error", error)
-        // allow request if the arcjet fails
+        console.error("Arcjet middleware error:", error);
+        // Fail open: allow the request if Arcjet service is unavailable
+        // Consider logging to monitoring service
         next();
     }
-}
+};

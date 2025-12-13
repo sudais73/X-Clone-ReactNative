@@ -25,7 +25,6 @@ app.use('api/notification', notificationRoutes)
 app.get('/',(req,res)=>(
     res.send("Nice to meet you sudais☕")
 ))
-
 const startServer = async ()=>{
     try {
         await connectDB()
@@ -33,7 +32,7 @@ const startServer = async ()=>{
     // listen for local development//
     if(ENV.NODE_ENV !=="production"){
         app.listen(ENV.PORT, ()=>(
-    console.log(`server is litening to port:${ENV.PORT}`)
+    console.log(`server is litening to port:${ENV.URL}`)
     
 ))
     }

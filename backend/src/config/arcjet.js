@@ -5,7 +5,7 @@ import { ENV } from './env.js'
 
 export const aj = arcjet({
     key: ENV.ARCJET_KEY,
-    characteristics: ["import.src"],
+    characteristics: ["ip.src"],
     rules: [
         // shield protects our app from common attacks eg SQL, XSS,CSRF attacks//
         shield({ mode: "LIVE" }),
