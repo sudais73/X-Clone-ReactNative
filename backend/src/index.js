@@ -32,7 +32,7 @@ const startServer = async ()=>{
     // listen for local development//
     if(ENV.NODE_ENV !=="production"){
         app.listen(ENV.PORT, ()=>(
-    console.log(`server is litening to port:${ENV.URL}`)
+    console.log(`server is litening to port:${ENV.PORT}`)
     
 ))
     }
