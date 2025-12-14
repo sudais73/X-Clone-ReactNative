@@ -8,11 +8,10 @@ import commentRoutes from './routes/comment.route.js'
 import postRoutes from './routes/post.route.js'
 import notificationRoutes from './routes/notification.route.js'
 import { arcjetMiddleware } from './middleware/arcjet.js'
-
-
-
-const app = express()
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:8081',
+  credentials: true, 
+}));
 app.use(express.json())
 app.use(clerkMiddleware())
 app.use(arcjetMiddleware)
