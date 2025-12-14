@@ -17,10 +17,10 @@ app.use(express.json())
 app.use(clerkMiddleware())
 app.use(arcjetMiddleware)
 
-app.use('api/user', userRoutes)
-app.use('api/comment', commentRoutes)
-app.use('api/post', postRoutes)
-app.use('api/notification', notificationRoutes)
+app.use('/api/user', userRoutes)
+app.use('/api/comment', commentRoutes)
+app.use('/api/post', postRoutes)
+app.use('/api/notification', notificationRoutes)
 
 app.get('/',(req,res)=>(
     res.send("Nice to meet you sudais☕")
