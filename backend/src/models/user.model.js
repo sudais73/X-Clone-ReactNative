@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
         required: true,
 
     },
-    lasttName: {
+    lastName: {
         type: String,
         required: true,
 
     },
-    usertName: {
+    username: {
         type: String,
         required: true,
         unique: true
