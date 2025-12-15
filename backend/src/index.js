@@ -18,22 +18,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 
-
-//    ✅ Explicit OPTIONS handler
-
-app.options('*', cors())
-
 app.use(express.json())
-
-
-//    ❗ Skip auth & security for preflight
-
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200)
-  }
-  next()
-})
 
 app.use(clerkMiddleware())
 app.use(arcjetMiddleware)
