@@ -4,7 +4,7 @@ import { protectRoute } from '../middleware/auth.middleware.js'
 const router  = express.Router()
 
 router.get('/profile/:username', getUserProfile)
-router.get("/sync", protectRoute, syncUser)
+router.post("/sync", protectRoute, syncUser)
 router.get("/me", protectRoute, getCurrentUser)
 router.put("/profile", protectRoute, updateProfile)
 router.post("/follow/:targetUserId", protectRoute, followUser)
