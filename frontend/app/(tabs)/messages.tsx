@@ -12,18 +12,18 @@ export default function MessageScreen() {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [newMessage, setNewMessage] = useState("")
     const deleteConversation = (conversationId: number) => {
-        // Alert.alert("Delete Conversation", "Are you sure you want to delete this message",
-        //     [
-        //         { text: "cancel", style: "cancel" },
-        //         {
-        //             text: "Delete", style: "destructive",
-        //             onPress: () => {
-        //                 setConversationList((prev) => prev.filter((conv) => conv.id !== conversationId))
-        //             }
-        //         },
-        //     ]);
+        Alert.alert("Delete Conversation", "Are you sure you want to delete this message",
+            [
+                { text: "cancel", style: "cancel" },
+                {
+                    text: "Delete", style: "destructive",
+                    onPress: () => {
+                        setConversationList((prev) => prev.filter((conv) => conv.id !== conversationId))
+                    }
+                },
+            ]);
 
-        setConversationList((prev) => prev.filter((conv) => conv.id !== conversationId))
+        // setConversationList((prev) => prev.filter((conv) => conv.id !== conversationId))
 
     };
 
