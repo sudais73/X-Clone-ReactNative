@@ -73,7 +73,7 @@ export const createPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Post must contain text or image" })
   }
 
-  const user = await User.findById(userId)
+const user = await User.findOne({ clerkId: req.user.id });
   if (!user) {
     return res.status(404).json({ error: "User not found" })
   }
