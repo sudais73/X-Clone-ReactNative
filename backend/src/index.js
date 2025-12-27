@@ -29,14 +29,13 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(express.json())
 
 app.use(clerkMiddleware())
 app.use(arcjetMiddleware)
 
-/* =======================
-   Routes
-======================= */
+
+  //  Routes
+
 app.use('/api/user', userRoutes)
 app.use('/api/comment', commentRoutes)
 app.use('/api/post', postRoutes)
@@ -47,6 +46,7 @@ app.get('/', (req, res) => {
 })
 
 const startServer = async () => {
+
   try {
     await connectDB()
 
@@ -55,6 +55,7 @@ const startServer = async () => {
         console.log(`server listening on port: ${ENV.PORT}`)
       })
     }
+    
   } catch (error) {
     console.log("failed to start server", error.message)
     process.exit(1)

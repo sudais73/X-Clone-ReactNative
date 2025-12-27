@@ -36,7 +36,9 @@ export const createComment = asyncHandler(async (req, res) => {
         post: postId,
         content,
     })
-
+console.log('====================================');
+console.log(userId, postId,content,post, comment);
+console.log('====================================');
     // link the comment to the post//
 
     await Post.findByIdAndUpdate(postId, {
