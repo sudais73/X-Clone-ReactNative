@@ -15,11 +15,11 @@ export default function TabsLayout() {
             tabBarActiveTintColor:"blue",
             tabBarInactiveTintColor:"#657786",
             tabBarStyle:{
-                backgroundColor:"fff",
                 borderTopColor:"#E1E8ED",
                 borderTopWidth:1,
                 height:60 + insets.bottom,
-                paddingTop:8
+                paddingTop:8,
+                paddingBottom:insets.bottom > 0 ? insets.bottom : 8,
             },
           
 

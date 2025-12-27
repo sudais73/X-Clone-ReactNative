@@ -10,7 +10,7 @@ export const useUserSync = () => {
 
     const SyncUserMutation = useMutation({
         mutationFn: () => userApi.syncUser(api),
-        onSuccess: (response: any) => console.log("Useer inserted to db", response.data.user),
+        onSuccess: (response: any) => console.log("Useer inserted to db", response.data.msg),
         onError: (error) => console.error("User sync failed", error)
     });
 
@@ -21,4 +21,5 @@ export const useUserSync = () => {
         }
 
     }, [isSignedIn])
+    return null;
 }

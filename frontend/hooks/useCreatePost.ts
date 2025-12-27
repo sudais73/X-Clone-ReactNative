@@ -1,113 +1,107 @@
-import { useApiClient } from "@/utils/api"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
-import * as ImagePicker from 'expo-image-picker'
-import { Alert } from "react-native"
-
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { useApiClient } from "../utils/api";
 
 export const useCreatePost = () => {
-
-  const [content, setContent] = useState("")
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  
-  const api = useApiClient()
-  const queryClient = useQueryClient()
+  const [content, setContent] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const api = useApiClient();
+  const queryClient = useQueryClient();
 
   const createPostMutation = useMutation({
-    mutationFn: async (newPost: { content: string; imageUrl?: string }) => {
-      const formData = new FormData()
+    mutationFn: async (postData: { content: string; imageUri?: string }) => {
+      const formData = new FormData();
 
-      if (newPost.content) {
-        formData.append('content', newPost.content)
-      }
+      console.log('====================================');
+      console.log(formData);
+      console.log('====================================');
+      if (postData.content) formData.append("content", postData.content);
 
-      if (newPost.imageUrl) {
-        const extensionMatch = newPost.imageUrl.match(/\.(\w+)$/)
-        const extension = extensionMatch ? extensionMatch[1].toLowerCase() : 'jpg'
+      if (postData.imageUri) {
+        const uriParts = postData.imageUri.split(".");
+        const fileType = uriParts[uriParts.length - 1].toLowerCase();
 
         const mimeTypeMap: Record<string, string> = {
-          jpg: 'image/jpeg',
-          jpeg: 'image/jpeg',
-          png: 'image/png',
-          gif: 'image/gif',
-          webp: 'image/webp',
-        }
+          png: "image/png",
+          gif: "image/gif",
+          webp: "image/webp",
+        };
+        const mimeType = mimeTypeMap[fileType] || "image/jpeg";
 
-        formData.append('image', {
-          uri: newPost.imageUrl,
-          name: `post_image.${extension}`,
-          type: mimeTypeMap[extension] || 'image/jpeg',
-        } as any)
+        formData.append("image", {
+          uri: postData.imageUri,
+          name: `image.${fileType}`,
+          type: mimeType,
+        } as any);
       }
 
-      // ✅ FIXED ENDPOINT
-      return api.post("/post", formData)
+      return api.post("/post", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     },
-
     onSuccess: () => {
-      setContent("")
-      setSelectedImage(null)
-      queryClient.invalidateQueries({ queryKey: ['posts'] })
+      setContent("");
+      setSelectedImage(null);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      Alert.alert("Success", "Post created successfully!");
     },
-
-    onError: (error: any) => {
-      console.error(
-        "Create post failed",
-        error?.response?.data || error.message
-      )
+    onError: () => {
+      Alert.alert("Error", "Failed to create post. Please try again.");
     },
-  })
+  });
 
-  const handleImagePicker = async (useCamera = false) => {
+  const handleImagePicker = async (useCamera: boolean = false) => {
     const permissionResult = useCamera
       ? await ImagePicker.requestCameraPermissionsAsync()
-      : await ImagePicker.requestMediaLibraryPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      Alert.alert(
-        `Permission to access ${useCamera ? 'camera' : 'gallery'} is required`
-      )
-      return
+    if (permissionResult.status !== "granted") {
+      const source = useCamera ? "camera" : "photo library";
+      Alert.alert("Permission needed", `Please grant permission to access your ${source}`);
+      return;
     }
 
     const pickerOptions = {
       allowsEditing: true,
-      aspect: [4, 3] as [number, number],
+      aspect: [16, 9] as [number, number],
       quality: 0.8,
-    }
+    };
 
-    const pickerResult = useCamera
+    const result = useCamera
       ? await ImagePicker.launchCameraAsync(pickerOptions)
       : await ImagePicker.launchImageLibraryAsync({
           ...pickerOptions,
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        })
+          mediaTypes: ["images"],
+        });
 
-    if (!pickerResult.canceled) {
-      setSelectedImage(pickerResult.assets[0].uri)
-    }
-  }
+    if (!result.canceled) setSelectedImage(result.assets[0].uri);
+  };
 
   const createPost = () => {
     if (!content.trim() && !selectedImage) {
-      Alert.alert("Post content cannot be empty")
-      return
+      Alert.alert("Empty Post", "Please write something or add an image before posting!");
+      return;
     }
 
-    createPostMutation.mutate({
+    const postData: { content: string; imageUri?: string } = {
       content: content.trim(),
-      imageUrl: selectedImage || undefined,
-    })
-  }
+    };
+
+    if (selectedImage) postData.imageUri = selectedImage;
+
+    createPostMutation.mutate(postData);
+  };
 
   return {
     content,
     setContent,
     selectedImage,
-    createPost,
     isCreating: createPostMutation.isPending,
     pickImageFromGallery: () => handleImagePicker(false),
-    takePhotoWithCamera: () => handleImagePicker(true),
+    takePhoto: () => handleImagePicker(true),
     removeImage: () => setSelectedImage(null),
-  }
-}
+    createPost,
+  };
+};
