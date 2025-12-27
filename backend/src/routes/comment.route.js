@@ -4,6 +4,8 @@ import { createComment, deleteComment, getComments } from '../controllers/commen
 const router  = express.Router()
 
 // public routes//
+router.use(express.json())
+
 
 router.get("/post/:postId", getComments)
 

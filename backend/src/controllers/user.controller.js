@@ -12,6 +12,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     res.status(200).json({ user });
 })
 
+
+
 export const updateProfile = asyncHandler(async (req, res) => {
     const { userId } = getAuth();
     const user = await User.findOneAndUpdate({ clerkId: userId }, req.body, { new: true });
@@ -22,11 +24,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
 })
 
+
 export const syncUser = asyncHandler(async (req, res) => {
     const { userId } = getAuth(req);
-    // check if the user already exists in the db//
 
-    const existingUser = await User.findOne({ clerkId: userId })
+    // check if the user already exists in the db//
+   const existingUser = await User.findOne({ clerkId: userId })
     if (existingUser) {
         return res.status(200).json({ user: existingUser, msg: "User Already exists" })
     }
@@ -52,6 +55,7 @@ export const syncUser = asyncHandler(async (req, res) => {
 export const getCurrentUser = asyncHandler(async (req, res) => {
     const { userId } = getAuth(req);
     const user = await User.findOne({ clerkId: userId })
+
     if (!user) {
         return res.status(400).json({ error: "User not found" })
     }
@@ -63,9 +67,9 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 export const followUser = asyncHandler(async(req,res)=>{
     const { userId } = getAuth(req);
     const {targetUserId} = req.params;
+
 if(userId === targetUserId ){
     return res.status(400).json({error:"You cannot follow yourself"} )
-
 
 }
 
@@ -76,6 +80,7 @@ if(!currentUser || !targetUser){
 }
 
 const isFollowing = currentUser.following.includes(targetUserId)
+
    if(isFollowing){
     //unfollow//
     await User.findByIdAndUpdate(currentUser._id, {
